@@ -17,10 +17,9 @@ from smartham import __version__
 from smartham.awards import awards_status, check_awards
 from smartham.config import data_dir, load_settings, ollama_settings, pdf_source_path
 from smartham.db import (
-    cache_explanation,
     cache_summary,
     connect,
-    get_cached_explanation,
+    explanation_cache_stats,
     get_cached_summary,
     get_streak,
     init_db,
@@ -28,7 +27,8 @@ from smartham.db import (
     upsert_questions,
     upsert_study_sections,
 )
-from smartham.ollama_tutor import explain_answer, summarize_section
+from smartham.explanations import ExplanationManager
+from smartham.ollama_tutor import summarize_section
 from smartham.pdf_parser import ingest_all
 
 WEB_DIR = Path(__file__).resolve().parent
@@ -44,6 +44,7 @@ class AppState:
         self.db_path = data_dir(settings) / "smartham.db"
         self.conn = connect(self.db_path)
         init_db(self.conn)
+        self.explanations = ExplanationManager(self.conn, settings)
 
 
 def _question_row(row: Any) -> dict[str, Any]:
@@ -86,6 +87,7 @@ def _stats(conn: Any) -> dict[str, Any]:
         "correct": correct,
         "accuracy": round(accuracy, 3),
         "streak": get_streak(conn),
+        **explanation_cache_stats(conn),
         "sections": [
             {
                 "section": r["section"],
@@ -193,6 +195,20 @@ def create_app(settings: dict[str, Any] | None = None) -> FastAPI:
             items.append(q)
         return JSONResponse({"questions": items})
 
+    @app.post("/api/quiz/prefetch-explanation")
+    async def api_prefetch_explanation(payload: dict = Body(...)) -> JSONResponse:
+        question_id = str(payload.get("question_id", "")).strip()
+        if not question_id:
+            return JSONResponse({"error": "question_id required"}, status_code=400)
+        result = await state.explanations.prefetch(question_id)
+        if result.get("status") == "not_found":
+            return JSONResponse({"error": "Question not found"}, status_code=404)
+        return JSONResponse(result)
+
+    @app.get("/api/quiz/explanation/{question_id}")
+    async def api_get_explanation(question_id: str) -> JSONResponse:
+        return JSONResponse(state.explanations.get_status(question_id))
+
     @app.post("/api/quiz/answer")
     async def api_quiz_answer(payload: dict = Body(...)) -> JSONResponse:
         question_id = str(payload.get("question_id", "")).strip()
@@ -221,27 +237,9 @@ def create_app(settings: dict[str, Any] | None = None) -> FastAPI:
         )
         newly_earned = check_awards(state.conn, is_correct=is_correct)
 
-        explanation = None
-        explanation_error = None
-        if not is_correct:
-            explanation = get_cached_explanation(state.conn, question_id)
-            if not explanation:
-                study = state.conn.execute(
-                    "SELECT body FROM study_sections ORDER BY RANDOM() LIMIT 1"
-                ).fetchone()
-                study_context = study["body"] if study else ""
-                ollama = ollama_settings(settings)
-                explanation, explanation_error = await explain_answer(
-                    base_url=ollama["base_url"],
-                    model=ollama["model"],
-                    question=question,
-                    study_context=study_context,
-                    timeout=ollama["timeout"],
-                )
-                if explanation:
-                    cache_explanation(state.conn, question_id, explanation)
-                elif not explanation_error:
-                    explanation_error = "Could not generate explanation."
+        explanation, explanation_error = await state.explanations.explanation_for_answer(
+            question_id
+        )
 
         return JSONResponse(
             {

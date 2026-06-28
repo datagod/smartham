@@ -64,6 +64,7 @@ def init_db(conn: sqlite3.Connection) -> None:
         CREATE TABLE IF NOT EXISTS explanation_cache (
             question_id TEXT PRIMARY KEY,
             explanation TEXT NOT NULL,
+            model TEXT,
             created_at REAL NOT NULL
         );
 
@@ -90,6 +91,14 @@ def init_db(conn: sqlite3.Connection) -> None:
         """
     )
     conn.commit()
+    _ensure_explanation_cache_columns(conn)
+
+
+def _ensure_explanation_cache_columns(conn: sqlite3.Connection) -> None:
+    cols = {row[1] for row in conn.execute("PRAGMA table_info(explanation_cache)").fetchall()}
+    if "model" not in cols:
+        conn.execute("ALTER TABLE explanation_cache ADD COLUMN model TEXT")
+        conn.commit()
 
 
 def upsert_questions(conn: sqlite3.Connection, questions: list[dict[str, Any]]) -> int:
@@ -233,26 +242,52 @@ def earn_award(conn: sqlite3.Connection, award_id: str) -> bool:
     return True
 
 
-def get_cached_explanation(conn: sqlite3.Connection, question_id: str) -> str | None:
-    row = conn.execute(
-        "SELECT explanation FROM explanation_cache WHERE question_id = ?",
-        (question_id,),
-    ).fetchone()
+def get_cached_explanation(
+    conn: sqlite3.Connection,
+    question_id: str,
+    *,
+    model: str | None = None,
+) -> str | None:
+    if model:
+        row = conn.execute(
+            """
+            SELECT explanation FROM explanation_cache
+            WHERE question_id = ? AND model = ?
+            """,
+            (question_id, model),
+        ).fetchone()
+    else:
+        row = conn.execute(
+            "SELECT explanation FROM explanation_cache WHERE question_id = ?",
+            (question_id,),
+        ).fetchone()
     return row["explanation"] if row else None
 
 
-def cache_explanation(conn: sqlite3.Connection, question_id: str, explanation: str) -> None:
+def cache_explanation(
+    conn: sqlite3.Connection,
+    question_id: str,
+    explanation: str,
+    *,
+    model: str | None = None,
+) -> None:
     conn.execute(
         """
-        INSERT INTO explanation_cache (question_id, explanation, created_at)
-        VALUES (?, ?, ?)
+        INSERT INTO explanation_cache (question_id, explanation, model, created_at)
+        VALUES (?, ?, ?, ?)
         ON CONFLICT(question_id) DO UPDATE SET
             explanation = excluded.explanation,
+            model = excluded.model,
             created_at = excluded.created_at
         """,
-        (question_id, explanation, time.time()),
+        (question_id, explanation, model, time.time()),
     )
     conn.commit()
+
+
+def explanation_cache_stats(conn: sqlite3.Connection) -> dict[str, int]:
+    row = conn.execute("SELECT COUNT(*) AS n FROM explanation_cache").fetchone()
+    return {"cached_explanations": int(row["n"] or 0)}
 
 
 def get_cached_summary(conn: sqlite3.Connection, cache_key: str) -> str | None:
