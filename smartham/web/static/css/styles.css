@@ -226,6 +226,12 @@ body {
 .award-icon { font-size: 1.6rem; }
 .award-name { font-weight: 600; margin-top: 0.35rem; }
 .award-desc { color: var(--muted); font-size: 0.82rem; margin-top: 0.25rem; }
+.study-item-desc {
+  color: var(--muted);
+  font-size: 0.82rem;
+  margin-top: 0.2rem;
+  line-height: 1.35;
+}
 .progress-bar {
   height: 6px;
   background: var(--surface2);

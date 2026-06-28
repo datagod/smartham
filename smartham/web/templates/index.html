@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SmartHam</title>
-  <link rel="stylesheet" href="/static/css/styles.css?v=1">
+  <link rel="stylesheet" href="/static/css/styles.css?v=2">
 </head>
 <body>
   <div class="app">
@@ -51,6 +51,7 @@
             {% for s in stats.sections %}
             <li class="study-item">
               <div class="study-item-title">{{ s.section }} ({{ s.level }})</div>
+              <div class="study-item-desc">{{ s.description }}</div>
               <div class="study-item-meta">{{ s.correct }}/{{ s.total }} · {{ (s.accuracy * 100)|round(1) }}%</div>
             </li>
             {% endfor %}

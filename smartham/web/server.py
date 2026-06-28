@@ -15,6 +15,7 @@ from starlette.staticfiles import StaticFiles
 
 from smartham import __version__
 from smartham.awards import awards_status, check_awards
+from smartham.sections import section_description
 from smartham.config import data_dir, load_settings, ollama_settings, pdf_source_path
 from smartham.db import (
     cache_summary,
@@ -91,6 +92,7 @@ def _stats(conn: Any) -> dict[str, Any]:
         "sections": [
             {
                 "section": r["section"],
+                "description": section_description(r["section"]),
                 "level": r["level"],
                 "correct": r["correct"],
                 "total": r["total"],
