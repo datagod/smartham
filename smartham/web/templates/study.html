@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Library · SmartHam</title>
+  <link rel="stylesheet" href="/static/css/styles.css?v=1">
+</head>
+<body>
+  <div class="app">
+    {% include "_nav.html" %}
+
+    <main class="main">
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Reference Material</h2>
+        </div>
+        <div class="log-scroll" id="study-list">
+          <p class="summary-empty">Loading study sections…</p>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Section</h2>
+          <button type="button" class="btn btn-primary btn-small" id="btn-summarize" disabled>Summarize with Ollama</button>
+        </div>
+        <div class="log-scroll" id="study-body">
+          <p class="summary-empty">Select a section from the reference library.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="/static/js/app.js?v=1"></script>
+  <script src="/static/js/study.js?v=1"></script>
+</body>
+</html>

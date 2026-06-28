@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mock Exam · SmartHam</title>
+  <link rel="stylesheet" href="/static/css/styles.css?v=1">
+</head>
+<body>
+  <div class="app">
+    {% include "_nav.html" %}
+
+    <main class="main main--single">
+      <section class="panel" id="exam-setup">
+        <div class="panel-head">
+          <h2>Mock Exam</h2>
+        </div>
+        <p class="hint">Basic: 100 questions, 70% to pass. Advanced: 50 questions, 70% to pass.</p>
+        <div class="set-grid" style="margin-top:1rem">
+          <div class="set-field">
+            <label for="exam-level">Level</label>
+            <select class="set-select" id="exam-level">
+              <option value="basic">Basic Qualification</option>
+              <option value="advanced">Advanced Qualification</option>
+            </select>
+          </div>
+        </div>
+        <div class="actions-row">
+          <button type="button" class="btn btn-primary" id="btn-start-exam">Start Exam</button>
+        </div>
+      </section>
+
+      <section class="panel" id="exam-active" hidden>
+        <div class="panel-head">
+          <h2>Exam In Progress</h2>
+          <span class="exam-progress" id="exam-progress"></span>
+        </div>
+        <p class="exam-timer" id="exam-timer"></p>
+        <p class="quiz-meta" id="exam-meta"></p>
+        <p class="quiz-stem" id="exam-stem"></p>
+        <div class="choice-list" id="exam-choices"></div>
+        <div class="actions-row">
+          <button type="button" class="btn btn-secondary" id="btn-prev-q">Previous</button>
+          <button type="button" class="btn btn-primary" id="btn-next-q">Next</button>
+          <button type="button" class="btn btn-success" id="btn-submit-exam">Submit Exam</button>
+        </div>
+      </section>
+
+      <section class="panel" id="exam-results" hidden>
+        <div class="panel-head">
+          <h2>Results</h2>
+        </div>
+        <div id="exam-results-body"></div>
+        <div class="actions-row">
+          <button type="button" class="btn btn-secondary" id="btn-restart-exam">Take Another Exam</button>
+        </div>
+      </section>
+    </main>
+  </div>
+  <div class="toast-stack" id="toast-stack"></div>
+  <script src="/static/js/app.js?v=1"></script>
+  <script src="/static/js/mock_exam.js?v=1"></script>
+</body>
+</html>

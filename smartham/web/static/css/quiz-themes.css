@@ -1,0 +1,21 @@
+.theme-modern .feedback-viewport {
+  background: linear-gradient(180deg, #121a24 0%, #0f1419 100%);
+  color: #e7ecf3;
+  padding: 1rem 1.1rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  min-height: 160px;
+}
+
+.theme-c64 .feedback-viewport {
+  background: #40318d;
+  color: #9ed0ff;
+  padding: 1rem;
+  border: 4px solid #7869c6;
+  font-family: 'Share Tech Mono', var(--mono);
+  font-size: 0.88rem;
+  min-height: 160px;
+}
+
+.theme-c64 .feedback-correct { color: #a8f0a8; }
+.theme-c64 .feedback-wrong { color: #ff8a8a; }

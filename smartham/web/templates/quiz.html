@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Practice Quiz · SmartHam</title>
+  <link rel="stylesheet" href="/static/css/styles.css?v=1">
+  <link rel="stylesheet" href="/static/css/quiz-themes.css?v=1">
+</head>
+<body>
+  <div class="app">
+    {% include "_nav.html" %}
+
+    <main class="main">
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Question</h2>
+          <div class="actions-row" style="margin:0">
+            <select class="set-select" id="quiz-level" aria-label="Exam level">
+              <option value="">All levels</option>
+              <option value="basic">Basic</option>
+              <option value="advanced">Advanced</option>
+            </select>
+            <input class="set-input" id="quiz-section" placeholder="Section e.g. B-001-001" style="min-width:10rem">
+            <button type="button" class="btn btn-primary btn-small" id="btn-next">Next Question</button>
+          </div>
+        </div>
+        <p class="quiz-meta" id="quiz-meta">Loading…</p>
+        <p class="quiz-stem" id="quiz-stem">Press Next Question to begin.</p>
+        <div class="choice-list" id="choice-list"></div>
+      </section>
+
+      <section class="panel feedback-panel">
+        <div class="panel-head">
+          <h2>Feedback</h2>
+          <label class="set-field" style="flex-direction:row;align-items:center;gap:0.5rem">
+            <span>Theme</span>
+            <select class="set-select" id="quiz-theme" aria-label="Feedback theme">
+              <option value="modern">Modern</option>
+              <option value="c64">C64</option>
+            </select>
+          </label>
+        </div>
+        <div class="feedback-viewport theme-modern" id="feedback-viewport">
+          <p class="summary-empty">Answer a question to see feedback and Ollama explanations.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+  <div class="toast-stack" id="toast-stack"></div>
+  <script src="/static/js/app.js?v=1"></script>
+  <script src="/static/js/quiz.js?v=1"></script>
+</body>
+</html>

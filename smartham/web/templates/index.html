@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartHam</title>
+  <link rel="stylesheet" href="/static/css/styles.css?v=1">
+</head>
+<body>
+  <div class="app">
+    {% include "_nav.html" %}
+
+    <main class="main main--triple">
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Progress</h2>
+          <span class="panel-count">v{{ version }}</span>
+        </div>
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="label">Accuracy</div>
+            <div class="value">{{ (stats.accuracy * 100)|round(1) }}%</div>
+          </div>
+          <div class="stat-card">
+            <div class="label">Streak</div>
+            <div class="value">{{ stats.streak }}</div>
+          </div>
+          <div class="stat-card">
+            <div class="label">Attempts</div>
+            <div class="value">{{ stats.attempts }}</div>
+          </div>
+          <div class="stat-card">
+            <div class="label">Question Bank</div>
+            <div class="value">{{ stats.total_questions }}</div>
+          </div>
+        </div>
+        <div class="actions-row">
+          <a class="btn btn-primary" href="/quiz">Start Practice</a>
+          <a class="btn btn-secondary" href="/mock-exam">Mock Exam</a>
+          <a class="btn btn-secondary" href="/study">Study Library</a>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Section Accuracy</h2>
+        </div>
+        <div class="log-scroll">
+          {% if stats.sections %}
+          <ul class="study-list">
+            {% for s in stats.sections %}
+            <li class="study-item">
+              <div class="study-item-title">{{ s.section }} ({{ s.level }})</div>
+              <div class="study-item-meta">{{ s.correct }}/{{ s.total }} · {{ (s.accuracy * 100)|round(1) }}%</div>
+            </li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="summary-empty">No practice attempts yet. Start a quiz to track section progress.</p>
+          {% endif %}
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Recent Awards</h2>
+          <a class="btn btn-secondary btn-small" href="/awards">Trophy Case</a>
+        </div>
+        <div class="log-scroll">
+          {% set earned = awards|selectattr('earned')|list %}
+          {% if earned %}
+          <ul class="study-list">
+            {% for a in earned[:8] %}
+            <li class="study-item">
+              <div class="study-item-title">{{ a.icon }} {{ a.name }}</div>
+              <div class="study-item-meta">{{ a.description }}</div>
+            </li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="summary-empty">Earn badges by answering questions correctly and passing mock exams.</p>
+          {% endif %}
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="/static/js/app.js?v=1"></script>
+</body>
+</html>

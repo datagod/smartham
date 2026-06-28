@@ -1,0 +1,9 @@
+host: 127.0.0.1
+port: 8091
+data_dir: data
+pdf_source_path: /home/bill/TRANSFER/hamradio
+
+ollama:
+  base_url: http://127.0.0.1:11434
+  model: llama3.2
+  timeout: 120

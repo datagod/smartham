@@ -1,0 +1,15 @@
+[Unit]
+Description=SmartHam Canadian ham radio study platform
+After=network.target
+
+[Service]
+Type=simple
+User=bill
+WorkingDirectory=/home/bill/smartham
+Environment=PATH=/home/bill/smartham/.venv/bin:/usr/local/bin:/usr/bin
+ExecStart=/home/bill/smartham/.venv/bin/smartham serve
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

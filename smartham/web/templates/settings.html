@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings · SmartHam</title>
+  <link rel="stylesheet" href="/static/css/styles.css?v=1">
+</head>
+<body>
+  <div class="set-app">
+    {% include "_nav.html" %}
+
+    <section class="set-panel">
+      <h2>PDF Source</h2>
+      <p class="hint" style="margin-top:0.5rem">
+        Question banks and reference PDFs are read from your Samba share path configured in <code>config.yaml</code>.
+      </p>
+      <p class="quiz-meta" style="margin-top:0.75rem">Current path: {{ pdf_path }}</p>
+      <div class="actions-row">
+        <button type="button" class="btn btn-primary" id="btn-ingest">Re-ingest PDFs</button>
+      </div>
+      <p class="hint" id="ingest-status" style="margin-top:0.75rem"></p>
+    </section>
+
+    <section class="set-panel">
+      <h2>Ollama Tutor</h2>
+      <p class="hint" style="margin-top:0.5rem">
+        Wrong-answer explanations and study summaries use your local Ollama instance.
+      </p>
+      <div class="set-grid" style="margin-top:0.75rem">
+        <div class="set-field">
+          <label>Base URL</label>
+          <input class="set-input" value="{{ ollama.base_url }}" readonly>
+        </div>
+        <div class="set-field">
+          <label>Model</label>
+          <input class="set-input" value="{{ ollama.model }}" readonly>
+        </div>
+      </div>
+      <p class="hint" style="margin-top:0.75rem">Edit <code>config.yaml</code> to change Ollama settings, then restart SmartHam.</p>
+    </section>
+
+    <section class="set-panel">
+      <h2>Legal</h2>
+      <p class="hint" style="margin-top:0.5rem">
+        Question banks are © Innovation, Science and Economic Development Canada (ISED).
+        SmartHam is an unofficial study aid — obtain official PDFs from ISED or Radio Amateurs of Canada.
+      </p>
+    </section>
+  </div>
+  <script src="/static/js/app.js?v=1"></script>
+  <script>
+    document.getElementById('btn-ingest')?.addEventListener('click', async () => {
+      const el = document.getElementById('ingest-status');
+      el.textContent = 'Ingesting PDFs…';
+      try {
+        const res = await fetch('/api/ingest', { method: 'POST' });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Ingest failed');
+        el.textContent = `Loaded ${data.questions} questions and ${data.study_sections} study sections.`;
+        el.className = 'status-line';
+      } catch (err) {
+        el.textContent = err.message;
+        el.className = 'status-line error';
+      }
+    });
+  </script>
+</body>
+</html>

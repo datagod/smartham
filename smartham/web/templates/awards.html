@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Awards · SmartHam</title>
+  <link rel="stylesheet" href="/static/css/styles.css?v=1">
+</head>
+<body>
+  <div class="app">
+    {% include "_nav.html" %}
+
+    <main class="main main--single">
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Trophy Case</h2>
+          <span class="panel-count">{{ awards|selectattr('earned')|list|length }} / {{ awards|length }} earned</span>
+        </div>
+        <div class="award-grid">
+          {% for a in awards %}
+          <article class="award-card {% if a.earned %}earned{% endif %}">
+            <div class="award-icon">{{ a.icon }}</div>
+            <div class="award-name">{{ a.name }}</div>
+            <div class="award-desc">{{ a.description }}</div>
+            {% if not a.earned and a.progress > 0 %}
+            <div class="progress-bar"><span style="width:{{ (a.progress * 100)|round(0) }}%"></span></div>
+            {% elif a.earned %}
+            <div class="study-item-meta" style="margin-top:0.5rem">Earned</div>
+            {% endif %}
+          </article>
+          {% endfor %}
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="/static/js/app.js?v=1"></script>
+</body>
+</html>
