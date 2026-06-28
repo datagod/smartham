@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Practice Quiz · SmartHam</title>
-  <link rel="stylesheet" href="/static/css/styles.css?v=1">
-  <link rel="stylesheet" href="/static/css/quiz-themes.css?v=1">
+  <link rel="stylesheet" href="/static/css/styles.css?v=2">
+  <link rel="stylesheet" href="/static/css/feedback-themes.css?v=1">
 </head>
 <body>
   <div class="app">
@@ -30,25 +30,20 @@
         <div class="choice-list" id="choice-list"></div>
       </section>
 
-      <section class="panel feedback-panel">
-        <div class="panel-head">
+      <section class="panel summary-panel feedback-panel">
+        <div class="panel-head summary-panel-head">
           <h2>Feedback</h2>
-          <label class="set-field" style="flex-direction:row;align-items:center;gap:0.5rem">
+          <label class="summary-theme-picker">
             <span>Theme</span>
-            <select class="set-select" id="quiz-theme" aria-label="Feedback theme">
-              <option value="modern">Modern</option>
-              <option value="c64">C64</option>
-            </select>
+            <select class="summary-theme-select" id="quiz-theme" aria-label="Feedback display theme"></select>
           </label>
         </div>
-        <div class="feedback-viewport theme-modern" id="feedback-viewport">
-          <p class="summary-empty">Answer a question to see feedback and Ollama explanations.</p>
-        </div>
+        {% include "_feedback_chassis.html" %}
       </section>
     </main>
   </div>
   <div class="toast-stack" id="toast-stack"></div>
-  <script src="/static/js/app.js?v=1"></script>
-  <script src="/static/js/quiz.js?v=1"></script>
+  <script src="/static/js/app.js?v=2"></script>
+  <script src="/static/js/quiz.js?v=2"></script>
 </body>
 </html>

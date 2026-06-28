@@ -1,3 +1,67 @@
+const FEEDBACK_THEME_KEY = 'smartham.feedbackTheme';
+
+const THEME_OPTIONS = [
+  { value: 'mainframe', label: '1970s mainframe' },
+  { value: 'dotmatrix', label: '80s dot matrix printer' },
+  { value: 'amber', label: 'Amber terminal' },
+  { value: 'ansi', label: 'ANSI color terminal' },
+  { value: 'blueprint', label: 'Blueprint' },
+  { value: 'c64', label: 'Commodore 64' },
+  { value: 'dune1984', label: 'Dune 1984' },
+  { value: 'computer50s', label: 'Early 1950s computer' },
+  { value: 'empire', label: 'Galactic Empire' },
+  { value: 'phosphor', label: 'Green phosphor CRT' },
+  { value: 'kawaiimail', label: 'Kawaii Mail' },
+  { value: 'lsmail', label: 'Leisure Suit Mailman' },
+  { value: 'teleprinter', label: 'Line printer' },
+  { value: 'logansrun', label: "Logan's Run" },
+  { value: 'macintosh', label: 'Macintosh' },
+  { value: 'mailtrek', label: 'Mail Trek (LCARS)' },
+  { value: 'mailcraft', label: 'MailCraft' },
+  { value: 'modern', label: 'Modern display' },
+  { value: 'nasa70s', label: 'NASA Mission Control' },
+  { value: 'newsprint', label: 'Newsprint' },
+  { value: 'pacmail', label: 'PacMail' },
+  { value: 'pdp11', label: 'PDP-11 terminal' },
+  { value: 'reddwarf', label: 'Red Dwarf' },
+  { value: 'arcade', label: 'Retro arcade CRT' },
+  { value: 'solarized', label: 'Solarized' },
+  { value: 'tripleplanets', label: 'Triple Planets' },
+  { value: 'typewriter', label: 'Typewriter' },
+  { value: 'weylandyutani', label: 'Weyland-Yutani Corp' },
+].sort((a, b) => a.label.localeCompare(b.label, undefined, { sensitivity: 'base' }));
+
+const THEMES = THEME_OPTIONS.map((t) => t.value);
+
+function escapeHtml(text) {
+  return String(text)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;');
+}
+
+function populateThemeSelect(select) {
+  if (!select) return;
+  select.innerHTML = THEME_OPTIONS.map(
+    ({ value, label }) =>
+      `<option value="${escapeHtml(value)}">${escapeHtml(label)}</option>`
+  ).join('');
+}
+
+function applyFeedbackTheme(theme) {
+  if (theme === 'minecraft') theme = 'mailcraft';
+  const chosen = THEMES.includes(theme) ? theme : 'modern';
+  const select = document.getElementById('quiz-theme');
+  const viewport = document.getElementById('feedback-viewport');
+  if (select) select.value = chosen;
+  if (viewport) viewport.className = `summary-viewport theme-${chosen}`;
+  try {
+    localStorage.setItem(FEEDBACK_THEME_KEY, chosen);
+  } catch (_) {
+    /* ignore */
+  }
+}
+
 function showToasts(awards) {
   const stack = document.getElementById('toast-stack');
   if (!stack || !Array.isArray(awards) || !awards.length) return;
@@ -8,6 +72,13 @@ function showToasts(awards) {
     stack.appendChild(el);
     setTimeout(() => el.remove(), 6000);
   }
+}
+
+function setFeedbackContent(html) {
+  const body = document.getElementById('feedback-body');
+  if (!body) return;
+  body.className = 'summary-body';
+  body.innerHTML = `<div class="markdown-body">${html}</div>`;
 }
 
 async function refreshHeaderStatus() {
@@ -23,17 +94,15 @@ async function refreshHeaderStatus() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const themeKey = 'smartham.quizTheme';
   const themeSelect = document.getElementById('quiz-theme');
-  if (themeSelect) {
-    const saved = localStorage.getItem(themeKey) || 'modern';
-    themeSelect.value = saved;
-    const viewport = document.getElementById('feedback-viewport');
-    if (viewport) viewport.className = `feedback-viewport theme-${saved}`;
-    themeSelect.addEventListener('change', () => {
-      const value = themeSelect.value;
-      localStorage.setItem(themeKey, value);
-      if (viewport) viewport.className = `feedback-viewport theme-${value}`;
-    });
+  if (!themeSelect) return;
+  populateThemeSelect(themeSelect);
+  let saved = 'modern';
+  try {
+    saved = localStorage.getItem(FEEDBACK_THEME_KEY) || 'modern';
+  } catch (_) {
+    /* ignore */
   }
+  applyFeedbackTheme(saved);
+  themeSelect.addEventListener('change', () => applyFeedbackTheme(themeSelect.value));
 });

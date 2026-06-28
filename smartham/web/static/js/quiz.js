@@ -32,8 +32,7 @@ async function loadQuestion() {
   document.getElementById('quiz-meta').textContent = 'Loading…';
   document.getElementById('quiz-stem').textContent = '';
   document.getElementById('choice-list').innerHTML = '';
-  document.getElementById('feedback-viewport').innerHTML =
-    '<p class="summary-empty">Answer a question to see feedback.</p>';
+  setFeedbackContent('<p class="summary-empty">Answer a question to see feedback and Ollama explanations.</p>');
 
   const res = await fetch(`/api/questions?${params}`);
   const data = await res.json();
@@ -59,34 +58,28 @@ async function submitAnswer(choice, btn) {
     body: JSON.stringify({ question_id: currentQuestion.id, chosen: choice }),
   });
   const data = await res.json();
-  const viewport = document.getElementById('feedback-viewport');
 
   if (data.correct) {
     btn.classList.add('is-correct');
-    viewport.innerHTML = `<p class="feedback-correct">Correct!</p><p class="feedback-body">Streak: ${data.streak}</p>`;
+    setFeedbackContent(
+      `<p class="feedback-correct">Correct!</p><p>Streak: ${data.streak}</p>`
+    );
   } else {
     btn.classList.add('is-wrong');
     document.querySelectorAll('.choice-btn').forEach((el) => {
       if (el.dataset.choice === data.correct_choice) el.classList.add('is-correct');
     });
-    let html = `<p class="feedback-wrong">Incorrect. Correct answer: ${data.correct_choice}</p>`;
+    let html = `<p class="feedback-wrong">Incorrect. Correct answer: ${escapeHtml(data.correct_choice)}</p>`;
     if (data.explanation) {
-      html += `<p class="feedback-body">${escapeHtml(data.explanation)}</p>`;
+      html += `<p>${escapeHtml(data.explanation)}</p>`;
     } else if (data.explanation_error) {
-      html += `<p class="hint">${escapeHtml(data.explanation_error)}</p>`;
+      html += `<p class="summary-empty">${escapeHtml(data.explanation_error)}</p>`;
     }
-    viewport.innerHTML = html;
+    setFeedbackContent(html);
   }
 
   showToasts(data.new_awards);
   refreshHeaderStatus();
-}
-
-function escapeHtml(text) {
-  return String(text)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;');
 }
 
 document.getElementById('btn-next')?.addEventListener('click', loadQuestion);
