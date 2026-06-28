@@ -48,13 +48,15 @@ function populateThemeSelect(select) {
   ).join('');
 }
 
-function applyFeedbackTheme(theme) {
+function applyTheme(theme) {
   if (theme === 'minecraft') theme = 'mailcraft';
   const chosen = THEMES.includes(theme) ? theme : 'modern';
-  const select = document.getElementById('quiz-theme');
-  const viewport = document.getElementById('feedback-viewport');
-  if (select) select.value = chosen;
-  if (viewport) viewport.className = `summary-viewport theme-${chosen}`;
+  document.querySelectorAll('[data-theme-select]').forEach((select) => {
+    select.value = chosen;
+  });
+  document.querySelectorAll('[data-theme-viewport]').forEach((viewport) => {
+    viewport.className = `summary-viewport theme-${chosen}`;
+  });
   try {
     localStorage.setItem(FEEDBACK_THEME_KEY, chosen);
   } catch (_) {
@@ -74,11 +76,15 @@ function showToasts(awards) {
   }
 }
 
-function setFeedbackContent(html) {
-  const body = document.getElementById('feedback-body');
+function setThemedContent(html, bodyId = 'feedback-body') {
+  const body = document.getElementById(bodyId);
   if (!body) return;
   body.className = 'summary-body';
   body.innerHTML = `<div class="markdown-body">${html}</div>`;
+}
+
+function setFeedbackContent(html) {
+  setThemedContent(html);
 }
 
 async function refreshHeaderStatus() {
@@ -93,16 +99,20 @@ async function refreshHeaderStatus() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const themeSelect = document.getElementById('quiz-theme');
-  if (!themeSelect) return;
-  populateThemeSelect(themeSelect);
+function initThemes() {
+  const selects = document.querySelectorAll('[data-theme-select]');
+  if (!selects.length) return;
   let saved = 'modern';
   try {
     saved = localStorage.getItem(FEEDBACK_THEME_KEY) || 'modern';
   } catch (_) {
     /* ignore */
   }
-  applyFeedbackTheme(saved);
-  themeSelect.addEventListener('change', () => applyFeedbackTheme(themeSelect.value));
-});
+  selects.forEach((select) => {
+    populateThemeSelect(select);
+    select.addEventListener('change', () => applyTheme(select.value));
+  });
+  applyTheme(saved);
+}
+
+document.addEventListener('DOMContentLoaded', initThemes);

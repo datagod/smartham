@@ -6,6 +6,7 @@ async function loadSections() {
   const data = await res.json();
   if (!data.sections?.length) {
     list.innerHTML = '<p class="summary-empty">No study sections found. Ingest PDFs in Settings.</p>';
+    setThemedContent('<p class="summary-empty">No study sections available.</p>');
     return;
   }
   list.innerHTML = '<ul class="study-list"></ul>';
@@ -20,27 +21,39 @@ async function loadSections() {
     li.addEventListener('click', () => selectSection(section.id));
     ul.appendChild(li);
   }
+  setThemedContent('<p class="summary-empty">Select a section from the reference library.</p>');
+}
+
+function renderSectionContent(data, summaryHtml = '') {
+  let html = `
+    <h2>${escapeHtml(data.title || data.source_file)}</h2>
+    <p class="summary-from">${escapeHtml(data.source_file)} · page ${data.page_number}</p>
+    <pre style="white-space:pre-wrap;font-family:inherit;font-size:0.88rem">${escapeHtml(data.body)}</pre>
+  `;
+  if (summaryHtml) {
+    html += `
+      <h2 class="summary-section">Ollama Summary</h2>
+      <pre style="white-space:pre-wrap;font-family:inherit;font-size:0.9rem">${escapeHtml(summaryHtml)}</pre>
+    `;
+  }
+  return html;
 }
 
 async function selectSection(id) {
   selectedId = id;
   document.getElementById('btn-summarize').disabled = false;
-  const body = document.getElementById('study-body');
-  body.innerHTML = '<p class="summary-empty">Loading…</p>';
+  setThemedContent('<p class="summary-empty">Loading…</p>');
   const res = await fetch(`/api/study/section/${id}`);
   const data = await res.json();
-  body.innerHTML = `
-    <h3 style="margin-bottom:0.5rem">${escapeHtml(data.title || data.source_file)}</h3>
-    <p class="quiz-meta">${escapeHtml(data.source_file)} · page ${data.page_number}</p>
-    <pre style="white-space:pre-wrap;font-family:var(--font);font-size:0.88rem;margin-top:0.75rem">${escapeHtml(data.body)}</pre>
-  `;
+  setThemedContent(renderSectionContent(data));
 }
 
 document.getElementById('btn-summarize')?.addEventListener('click', async () => {
   if (!selectedId) return;
-  const body = document.getElementById('study-body');
-  const existing = body.innerHTML;
-  body.innerHTML = existing + '<p class="hint" style="margin-top:1rem">Generating summary…</p>';
+  const sectionRes = await fetch(`/api/study/section/${selectedId}`);
+  const sectionData = await sectionRes.json();
+  setThemedContent(renderSectionContent(sectionData) + '<p class="summary-empty">Generating summary…</p>');
+
   const res = await fetch('/api/study/summarize', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -48,15 +61,13 @@ document.getElementById('btn-summarize')?.addEventListener('click', async () => 
   });
   const data = await res.json();
   if (!res.ok) {
-    body.innerHTML = existing + `<p class="status-line error" style="margin-top:1rem">${escapeHtml(data.error)}</p>`;
+    setThemedContent(
+      renderSectionContent(sectionData) +
+        `<p class="summary-empty">${escapeHtml(data.error || 'Summary failed')}</p>`
+    );
     return;
   }
-  body.innerHTML = existing + `
-    <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)">
-      <h3>Ollama Summary</h3>
-      <pre style="white-space:pre-wrap;font-family:var(--font);font-size:0.9rem;margin-top:0.5rem">${escapeHtml(data.summary)}</pre>
-    </div>
-  `;
+  setThemedContent(renderSectionContent(sectionData, data.summary));
 });
 
 function escapeHtml(text) {
