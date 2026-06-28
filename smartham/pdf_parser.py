@@ -115,6 +115,7 @@ def _parse_col(items: list[dict[str, Any]], level: str) -> list[dict[str, Any]]:
         choices: dict[str, str] = {}
         current: str | None = None
         pending: list[str] = []
+        all_labels_seen = False
         while i < len(ys):
             row = rows[ys[i]]
             if any(it["kind"] == "id" for it in row):
@@ -127,17 +128,21 @@ def _parse_col(items: list[dict[str, Any]], level: str) -> list[dict[str, Any]]:
                 pending = []
                 _append_choice(choices, letter, chunk)
                 current = letter
+                if len(choices) == 4:
+                    all_labels_seen = True
             elif parts:
-                next_label_only = i + 1 < len(ys) and _row_label_only(rows[ys[i + 1]])
-                if next_label_only:
-                    pending.extend(parts)
-                elif current:
-                    _append_choice(choices, current, " ".join(parts))
+                if all_labels_seen:
+                    if current:
+                        _append_choice(choices, current, " ".join(parts))
                 else:
-                    pending.extend(parts)
+                    next_label_only = i + 1 < len(ys) and _row_label_only(rows[ys[i + 1]])
+                    if next_label_only:
+                        pending.extend(parts)
+                    elif current:
+                        _append_choice(choices, current, " ".join(parts))
+                    else:
+                        pending.extend(parts)
             i += 1
-            if len(choices) == 4:
-                break
 
         if correct and stem and len(choices) == 4 and all(choices.get(x) for x in "ABCD"):
             out.append(
