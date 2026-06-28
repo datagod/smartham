@@ -71,7 +71,13 @@ async def ollama_chat(
     except httpx.TimeoutException:
         return None, f"Ollama timed out after {timeout:.0f}s"
     except httpx.HTTPStatusError as exc:
-        return None, f"Ollama HTTP {exc.response.status_code}"
+        if exc.response.status_code == 404:
+            return (
+                None,
+                f'Ollama model "{model}" not found (HTTP 404). '
+                f'Run `ollama list` and set ollama.model in config.yaml.',
+            )
+        return None, f"Ollama HTTP {exc.response.status_code} for model {model!r}"
     except httpx.RequestError as exc:
         return None, f"Ollama unavailable: {exc}"
 
