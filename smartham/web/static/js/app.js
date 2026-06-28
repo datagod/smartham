@@ -41,6 +41,87 @@ function escapeHtml(text) {
     .replaceAll('>', '&gt;');
 }
 
+function formatInlineMarkdown(text) {
+  let html = escapeHtml(text);
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+  html = html.replace(
+    /^([A-D])\)\s*/i,
+    '<span class="feedback-choice-label">$1)</span> '
+  );
+  html = html.replace(
+    /^([A-D])\s+is\s+/i,
+    '<span class="feedback-choice-label">$1</span> is '
+  );
+  return html;
+}
+
+function isExplanationListLine(line) {
+  const trimmed = line.trim();
+  return (
+    /^[-*•]\s+/.test(trimmed) ||
+    /^\d+\.\s+/.test(trimmed) ||
+    /^[A-D]\)\s/i.test(trimmed) ||
+    /^[A-D]\s+is(n't| not)?\s/i.test(trimmed) ||
+    /^[A-D]\s+does(n't| not)?\s/i.test(trimmed)
+  );
+}
+
+function formatExplanation(text) {
+  if (!text) return '';
+
+  const blocks = String(text)
+    .replace(/\r\n/g, '\n')
+    .trim()
+    .split(/\n\s*\n/);
+
+  let html = '';
+  for (const block of blocks) {
+    const lines = block
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean);
+    if (!lines.length) continue;
+
+    if (lines.length === 1) {
+      const line = lines[0];
+      const heading = line.match(/^(#{1,3})\s+(.+)$/);
+      if (heading) {
+        const level = heading[1].length;
+        const content = formatInlineMarkdown(heading[2]);
+        html +=
+          level <= 2
+            ? `<h2 class="summary-section">${content}</h2>`
+            : `<h3>${content}</h3>`;
+      } else if (line.endsWith(':') && line.length < 96 && !/\.\s/.test(line)) {
+        html += `<h3 class="feedback-lead">${formatInlineMarkdown(line)}</h3>`;
+      } else {
+        const choiceItem = /^[A-D]\s+(is|isn't|is not|does|doesn't|does not)\b/i.test(line);
+        const choiceClass = choiceItem ? ' class="feedback-choice-item"' : '';
+        html += `<p${choiceClass}>${formatInlineMarkdown(line)}</p>`;
+      }
+      continue;
+    }
+
+    const listLines = lines.filter(isExplanationListLine);
+    if (listLines.length >= 2 && listLines.length >= lines.length - 1) {
+      html += '<ul class="feedback-points">';
+      for (const line of lines) {
+        const cleaned = line.replace(/^[-*•]\s+/, '').replace(/^\d+\.\s+/, '');
+        html += `<li>${formatInlineMarkdown(cleaned)}</li>`;
+      }
+      html += '</ul>';
+      continue;
+    }
+
+    for (const line of lines) {
+      html += `<p>${formatInlineMarkdown(line)}</p>`;
+    }
+  }
+
+  return html;
+}
+
 function populateThemeSelect(select) {
   if (!select) return;
   select.innerHTML = THEME_OPTIONS.map(

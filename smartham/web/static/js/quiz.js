@@ -32,14 +32,21 @@ function prefetchExplanation(questionId) {
 }
 
 function formatFeedback(data) {
-  let html = '';
+  let html = '<div class="feedback-result">';
   if (data.correct) {
-    html += `<p class="feedback-correct">Correct!</p><p>Streak: ${data.streak}</p>`;
+    html += `<p class="feedback-correct">Correct!</p>`;
+    html += `<p class="feedback-meta">Streak: ${data.streak}</p>`;
   } else {
-    html += `<p class="feedback-wrong">Incorrect. Correct answer: ${escapeHtml(data.correct_choice)}</p>`;
+    html += `<p class="feedback-wrong">Incorrect</p>`;
+    html += `<p class="feedback-meta">Correct answer: <strong>${escapeHtml(data.correct_choice)}</strong></p>`;
   }
+  html += '</div>';
+
   if (data.explanation) {
-    html += `<p>${escapeHtml(data.explanation)}</p>`;
+    html += '<div class="feedback-explanation">';
+    html += '<h2 class="summary-section">Explanation</h2>';
+    html += formatExplanation(data.explanation);
+    html += '</div>';
   } else if (data.explanation_error) {
     html += `<p class="summary-empty">${escapeHtml(data.explanation_error)}</p>`;
   }
