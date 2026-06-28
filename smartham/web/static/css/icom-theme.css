@@ -1,0 +1,431 @@
+/* --- ICOM IC-9700 tri-band transceiver --- */
+.icom-panel-header,
+.icom-panel-footer {
+  display: none;
+}
+
+.summary-crt-chassis:has(.theme-icom) {
+  background: linear-gradient(165deg, #4a4a50 0%, #35353a 18%, #2a2a2f 55%, #1f1f24 100%);
+  border-radius: 10px;
+  padding: 0.55rem 0.65rem 0.5rem;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -3px 12px rgba(0, 0, 0, 0.45),
+    0 8px 24px rgba(0, 0, 0, 0.5);
+  border: 2px solid #1a1a1e;
+}
+
+.summary-crt-chassis:has(.theme-icom) .crt-bezel-top,
+.summary-crt-chassis:has(.theme-icom) .crt-bezel-bottom {
+  display: none;
+}
+
+.summary-crt-chassis:has(.theme-icom) .crt-screen-well {
+  border-radius: 6px;
+  overflow: hidden;
+  border: 3px solid #141418;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.theme-icom .summary-viewport {
+  border: none;
+  border-radius: 0;
+  background: #1e1e22;
+}
+
+.theme-icom .icom-panel-header,
+.theme-icom .icom-panel-footer {
+  display: block;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  user-select: none;
+  pointer-events: none;
+}
+
+.theme-icom .icom-bezel-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 0.75rem;
+  padding: 0.45rem 0.55rem 0.35rem;
+  background: linear-gradient(180deg, #3a3a40 0%, #2e2e34 100%);
+  border-bottom: 2px solid #1a1a1e;
+}
+
+.theme-icom .icom-brand-block {
+  display: flex;
+  align-items: baseline;
+  gap: 0.15rem;
+}
+
+.theme-icom .icom-logo-i {
+  color: #d42030;
+  font-size: 1.15rem;
+  font-weight: 800;
+  font-style: italic;
+  letter-spacing: -0.04em;
+}
+
+.theme-icom .icom-logo-com {
+  color: #e8e8ec;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.theme-icom .icom-model-badge {
+  margin-left: 0.5rem;
+  padding: 0.12rem 0.45rem;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: #a8c8e8;
+  background: #1a2838;
+  border: 1px solid #2a4868;
+  border-radius: 3px;
+}
+
+.theme-icom .icom-band-row {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.theme-icom .icom-band {
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  padding: 0.15rem 0.4rem;
+  color: #6a7a88;
+  background: #222228;
+  border: 1px solid #3a3a42;
+  border-radius: 3px;
+}
+
+.theme-icom .icom-band-active {
+  color: #e8f4ff;
+  background: linear-gradient(180deg, #1a5a9a 0%, #124070 100%);
+  border-color: #2a78b8;
+  box-shadow: 0 0 8px rgba(42, 120, 184, 0.35);
+}
+
+.theme-icom .icom-display-bar {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.4rem 0.55rem;
+  background: linear-gradient(180deg, #0c1828 0%, #081420 100%);
+  border-bottom: 2px solid #1a3050;
+}
+
+.theme-icom .icom-freq-block {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.theme-icom .icom-freq-label {
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: #40c050;
+  letter-spacing: 0.1em;
+  padding: 0.1rem 0.3rem;
+  background: rgba(64, 192, 80, 0.15);
+  border: 1px solid rgba(64, 192, 80, 0.35);
+  border-radius: 2px;
+}
+
+.theme-icom .icom-freq {
+  font-family: 'Share Tech Mono', 'SF Mono', Consolas, monospace;
+  font-size: 1.35rem;
+  font-weight: 400;
+  color: #f0f8ff;
+  letter-spacing: 0.06em;
+  text-shadow: 0 0 12px rgba(100, 180, 255, 0.35);
+}
+
+.theme-icom .icom-freq-unit {
+  font-size: 0.62rem;
+  color: #6a9ac0;
+  letter-spacing: 0.08em;
+}
+
+.theme-icom .icom-mode-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.1rem;
+  font-family: 'Share Tech Mono', var(--mono);
+  font-size: 0.62rem;
+}
+
+.theme-icom .icom-mode {
+  color: #4db8ff;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.theme-icom .icom-offset,
+.theme-icom .icom-power {
+  color: #88a8c8;
+}
+
+.theme-icom .icom-scope-mini {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 28px;
+  padding: 2px 4px;
+  background: #040810;
+  border: 1px solid #1a3050;
+  border-radius: 2px;
+  min-width: 72px;
+}
+
+.theme-icom .icom-scope-bar {
+  flex: 1;
+  min-width: 3px;
+  background: linear-gradient(180deg, #60c0ff 0%, #2080c8 60%, #104060 100%);
+  border-radius: 1px 1px 0 0;
+  opacity: 0.85;
+}
+
+.theme-icom .summary-body {
+  flex: 1;
+  position: relative;
+  z-index: 1;
+  background:
+    linear-gradient(180deg, rgba(20, 60, 100, 0.08) 0%, transparent 30%),
+    linear-gradient(0deg, #0a1420 0%, #0d1a2a 50%, #0a1420 100%);
+  color: #d8e8f8;
+  padding: 0.85rem 0.9rem 1rem;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.theme-icom .summary-body::before {
+  content: 'SMARTHAM STUDY · SPECTRUM SCOPE VIEW';
+  display: block;
+  font-family: 'Share Tech Mono', var(--mono);
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: #5a9ac8;
+  text-transform: uppercase;
+  margin-bottom: 0.55rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid #1a3050;
+}
+
+.theme-icom .summary-body::after {
+  content: 'MENU · FUNC · DUP · MODE';
+  display: block;
+  margin-top: 0.75rem;
+  padding-top: 0.45rem;
+  border-top: 1px solid #1a3050;
+  font-family: 'Share Tech Mono', var(--mono);
+  font-size: 0.52rem;
+  letter-spacing: 0.14em;
+  color: #4a6888;
+  text-transform: uppercase;
+}
+
+.theme-icom .markdown-body h2 {
+  color: #4db8ff;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 1rem 0 0.4rem;
+  padding: 0.25rem 0.5rem;
+  background: rgba(30, 90, 150, 0.25);
+  border-left: 3px solid #2a88d0;
+}
+
+.theme-icom .markdown-body h2:first-child {
+  margin-top: 0;
+}
+
+.theme-icom .markdown-body h3 {
+  color: #88c0e8;
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin: 0.75rem 0 0.3rem;
+}
+
+.theme-icom .markdown-body p {
+  color: #c8d8e8;
+  margin: 0.4rem 0;
+}
+
+.theme-icom .markdown-body strong {
+  color: #f0f8ff;
+}
+
+.theme-icom .markdown-body code {
+  font-family: 'Share Tech Mono', var(--mono);
+  background: rgba(30, 80, 130, 0.35);
+  color: #7ec8ff;
+  border: 1px solid #2a5888;
+  padding: 0.1rem 0.3rem;
+  border-radius: 2px;
+}
+
+.theme-icom .markdown-body pre {
+  font-family: 'Share Tech Mono', var(--mono);
+  background: #060c14;
+  border: 1px solid #1a3050;
+  color: #a8c8e0;
+  padding: 0.65rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+
+.theme-icom .summary-from {
+  color: #6a9ab8;
+  border-bottom-color: #1a3050;
+}
+
+.theme-icom .summary-empty {
+  color: #6a9ac0;
+  font-style: normal;
+}
+
+.theme-icom .feedback-correct {
+  color: #50e070;
+  text-shadow: 0 0 8px rgba(80, 224, 112, 0.35);
+}
+
+.theme-icom .feedback-wrong {
+  color: #ff9050;
+  text-shadow: 0 0 8px rgba(255, 144, 80, 0.3);
+}
+
+.theme-icom .icom-panel-footer {
+  padding: 0.35rem 0.55rem 0.45rem;
+  background: linear-gradient(180deg, #2a2a30 0%, #222228 100%);
+  border-top: 2px solid #1a1a1e;
+}
+
+.theme-icom .icom-footer-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.55rem;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.theme-icom .icom-rx-led {
+  color: #308040;
+  padding: 0.12rem 0.35rem;
+  border: 1px solid #205030;
+  border-radius: 2px;
+  background: rgba(48, 128, 64, 0.15);
+}
+
+.theme-icom .icom-rx-led.icom-led-on {
+  color: #50ff60;
+  background: rgba(48, 192, 64, 0.25);
+  box-shadow: 0 0 8px rgba(64, 224, 80, 0.4);
+}
+
+.theme-icom .icom-tx-led {
+  color: #604030;
+  padding: 0.12rem 0.35rem;
+  border: 1px solid #402820;
+  border-radius: 2px;
+  background: rgba(96, 48, 32, 0.15);
+}
+
+.theme-icom .icom-meter-label {
+  color: #6a7888;
+  font-weight: 500;
+  margin-left: 0.25rem;
+}
+
+.theme-icom .icom-s-meter {
+  display: flex;
+  gap: 2px;
+  align-items: flex-end;
+  height: 14px;
+}
+
+.theme-icom .icom-s-seg {
+  width: 8px;
+  height: 6px;
+  background: #2a3038;
+  border: 1px solid #3a4248;
+  border-radius: 1px;
+}
+
+.theme-icom .icom-s-seg.icom-s-on {
+  background: linear-gradient(180deg, #50c060 0%, #308040 100%);
+  border-color: #40a050;
+  box-shadow: 0 0 4px rgba(64, 192, 80, 0.35);
+}
+
+.theme-icom .icom-s-seg:nth-child(n+7).icom-s-on {
+  background: linear-gradient(180deg, #e8c030 0%, #a08020 100%);
+  border-color: #c0a030;
+}
+
+.theme-icom .icom-s-seg:nth-child(n+9).icom-s-on {
+  background: linear-gradient(180deg, #e85040 0%, #a03028 100%);
+  border-color: #c04038;
+}
+
+.theme-icom .icom-stby {
+  margin-left: auto;
+  color: #88a0b8;
+}
+
+.theme-icom .icom-vfo {
+  color: #4db8ff;
+  padding: 0.1rem 0.35rem;
+  background: rgba(42, 120, 184, 0.2);
+  border: 1px solid #2a5888;
+  border-radius: 2px;
+}
+
+.theme-icom .icom-knob-hint {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+  padding-right: 0.25rem;
+}
+
+.theme-icom .icom-knob {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #5a5a62 0%, #3a3a42 45%, #2a2a30 100%);
+  border: 2px solid #1a1a1e;
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.15),
+    0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.theme-icom .icom-knob-small {
+  width: 16px;
+  height: 16px;
+}
+
+.theme-icom .summary-body.summary-loading::before,
+.theme-icom .summary-body.summary-error::before {
+  content: 'SCANNING · DECODING STUDY DATA';
+  color: #4db8ff;
+}
+
+.theme-icom .summary-body.summary-loading::after,
+.theme-icom .summary-body.summary-error::after {
+  content: 'PLEASE WAIT · CPU BUSY';
+  color: #4a6888;
+}

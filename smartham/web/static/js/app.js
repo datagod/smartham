@@ -10,6 +10,7 @@ const THEME_OPTIONS = [
   { value: 'dune1984', label: 'Dune 1984' },
   { value: 'computer50s', label: 'Early 1950s computer' },
   { value: 'empire', label: 'Galactic Empire' },
+  { value: 'icom', label: 'ICOM IC-9700' },
   { value: 'phosphor', label: 'Green phosphor CRT' },
   { value: 'kawaiimail', label: 'Kawaii Mail' },
   { value: 'lsmail', label: 'Leisure Suit Mailman' },
