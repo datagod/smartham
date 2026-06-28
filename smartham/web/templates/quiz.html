@@ -19,7 +19,7 @@
           <div class="actions-row" style="margin:0">
             <select class="set-select" id="quiz-level" aria-label="Exam level">
               <option value="">All levels</option>
-              <option value="basic">Basic</option>
+              <option value="basic" selected>Basic</option>
               <option value="advanced">Advanced</option>
             </select>
             <input class="set-input" id="quiz-section" placeholder="Section e.g. B-001-001" style="min-width:10rem">
@@ -27,7 +27,7 @@
           </div>
         </div>
         <p class="quiz-meta" id="quiz-meta">Loading…</p>
-        <p class="quiz-stem" id="quiz-stem">Press Next Question to begin.</p>
+        <p class="quiz-stem" id="quiz-stem">Loading your first question…</p>
         <div class="choice-list" id="choice-list"></div>
       </section>
 
@@ -45,6 +45,6 @@
   </div>
   <div class="toast-stack" id="toast-stack"></div>
   <script src="/static/js/app.js?v=4"></script>
-  <script src="/static/js/quiz.js?v=3"></script>
+  <script src="/static/js/quiz.js?v=4"></script>
 </body>
 </html>

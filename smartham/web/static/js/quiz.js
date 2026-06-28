@@ -129,5 +129,16 @@ async function submitAnswer(choice, btn) {
   refreshHeaderStatus();
 }
 
+function initQuizFilters() {
+  const params = new URLSearchParams(window.location.search);
+  const level = params.get('level');
+  if (level === 'basic' || level === 'advanced') {
+    document.getElementById('quiz-level').value = level;
+  }
+}
+
 document.getElementById('btn-next')?.addEventListener('click', loadQuestion);
-document.addEventListener('DOMContentLoaded', loadQuestion);
+document.addEventListener('DOMContentLoaded', () => {
+  initQuizFilters();
+  loadQuestion();
+});
