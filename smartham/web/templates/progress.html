@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Question Progress · SmartHam</title>
-  <link rel="stylesheet" href="/static/css/styles.css?v=6">
+  <link rel="stylesheet" href="/static/css/styles.css?v=7">
 </head>
 <body>
   <div class="app">
@@ -63,7 +63,7 @@
         <div class="progress-tower-window">
           <div class="progress-tower-grid" role="list">
             {% for q in progress.questions %}
-            {% with extra_class='progress-tower-box' %}
+            {% with extra_class='' %}
             {% include "_progress_box.html" %}
             {% endwith %}
             {% endfor %}
