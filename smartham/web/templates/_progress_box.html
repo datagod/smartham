@@ -1,0 +1,8 @@
+<a
+  href="/quiz?question={{ q.id }}"
+  class="progress-box-link"
+  title="{{ q.id }}{% if q.mastered %} — answered correctly{% elif q.missed %} — answered incorrectly{% endif %}"
+  aria-label="{{ q.id }}{% if q.mastered %} — answered correctly{% elif q.missed %} — answered incorrectly{% endif %}"
+>
+  <span class="progress-box {{ extra_class }}{% if q.mastered %} is-mastered{% elif q.missed %} is-missed{% endif %}"></span>
+</a>

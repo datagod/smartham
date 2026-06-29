@@ -230,7 +230,13 @@ def question_progress(
                 WHERE a.question_id = q.id
                   AND a.mode = 'practice'
                   AND a.is_correct = 1
-            ) AS mastered
+            ) AS mastered,
+            EXISTS (
+                SELECT 1 FROM quiz_attempts a
+                WHERE a.question_id = q.id
+                  AND a.mode = 'practice'
+                  AND a.is_correct = 0
+            ) AS missed_attempt
         FROM questions q
         {where}
         ORDER BY q.id
@@ -243,6 +249,7 @@ def question_progress(
             "level": row["level"],
             "section": row["section"],
             "mastered": bool(row["mastered"]),
+            "missed": not bool(row["mastered"]) and bool(row["missed_attempt"]),
         }
         for row in rows
     ]

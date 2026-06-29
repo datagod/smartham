@@ -53,14 +53,27 @@ function formatFeedback(data) {
   return html;
 }
 
+function clearPinnedQuestion() {
+  const url = new URL(window.location.href);
+  if (!url.searchParams.has('question')) return;
+  url.searchParams.delete('question');
+  window.history.replaceState({}, '', url);
+}
+
 async function loadQuestion() {
   answered = false;
   prefetchPromise = null;
+  const urlParams = new URLSearchParams(window.location.search);
+  const pinnedId = urlParams.get('question');
   const level = document.getElementById('quiz-level').value;
   const section = document.getElementById('quiz-section').value.trim();
   const params = new URLSearchParams({ limit: '1' });
-  if (level) params.set('level', level);
-  if (section) params.set('section', section);
+  if (pinnedId) {
+    params.set('question_id', pinnedId);
+  } else {
+    if (level) params.set('level', level);
+    if (section) params.set('section', section);
+  }
 
   document.getElementById('quiz-meta').textContent = 'Loading…';
   document.getElementById('quiz-stem').textContent = '';
@@ -70,11 +83,15 @@ async function loadQuestion() {
   const res = await fetch(`/api/questions?${params}`);
   const data = await res.json();
   if (!data.questions?.length) {
-    document.getElementById('quiz-meta').textContent = 'No questions found. Ingest PDFs in Settings.';
+    document.getElementById('quiz-meta').textContent = pinnedId
+      ? `Question ${pinnedId} not found.`
+      : 'No questions found. Ingest PDFs in Settings.';
     setFeedbackContent('<p class="summary-empty">No questions available.</p>');
     return;
   }
   currentQuestion = data.questions[0];
+  document.getElementById('quiz-level').value = currentQuestion.level;
+  document.getElementById('quiz-section').value = currentQuestion.section;
   document.getElementById('quiz-meta').textContent =
     `${currentQuestion.id} · ${currentQuestion.level} · ${currentQuestion.section}`;
   document.getElementById('quiz-stem').textContent = currentQuestion.stem;
@@ -139,12 +156,15 @@ async function submitAnswer(choice, btn) {
 function initQuizFilters() {
   const params = new URLSearchParams(window.location.search);
   const level = params.get('level');
-  if (level === 'basic' || level === 'advanced') {
+  if (!params.get('question') && (level === 'basic' || level === 'advanced')) {
     document.getElementById('quiz-level').value = level;
   }
 }
 
-document.getElementById('btn-next')?.addEventListener('click', loadQuestion);
+document.getElementById('btn-next')?.addEventListener('click', () => {
+  clearPinnedQuestion();
+  loadQuestion();
+});
 document.addEventListener('DOMContentLoaded', () => {
   initQuizFilters();
   loadQuestion();

@@ -335,6 +335,29 @@ body {
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
 }
 
+.progress-box.is-missed {
+  background: var(--error);
+  border-color: #c94a4a;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+.progress-box-link {
+  display: inline-flex;
+  line-height: 0;
+  text-decoration: none;
+  border-radius: 2px;
+}
+
+.progress-box-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.progress-box-link:hover .progress-box {
+  transform: scale(1.35);
+  z-index: 1;
+}
+
 .progress-box:hover {
   transform: scale(1.35);
   z-index: 1;
@@ -387,9 +410,14 @@ body {
   gap: 3px;
 }
 
+.progress-tower-grid .progress-box-link {
+  display: block;
+  aspect-ratio: 1;
+}
+
 .progress-tower-box {
   width: 100%;
-  height: auto;
+  height: 100%;
   aspect-ratio: 1;
 }
 

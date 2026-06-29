@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Question Progress · SmartHam</title>
-  <link rel="stylesheet" href="/static/css/styles.css?v=5">
+  <link rel="stylesheet" href="/static/css/styles.css?v=6">
 </head>
 <body>
   <div class="app">
@@ -24,8 +24,9 @@
             <a class="btn btn-small {% if level_filter == 'advanced' %}btn-primary{% else %}btn-secondary{% endif %}" href="/progress?level=advanced">Advanced</a>
           </div>
           <div class="progress-legend">
-            <span class="progress-legend-item"><span class="progress-box" aria-hidden="true"></span> Not yet correct</span>
-            <span class="progress-legend-item"><span class="progress-box is-mastered" aria-hidden="true"></span> Answered correctly</span>
+            <span class="progress-legend-item"><span class="progress-box" aria-hidden="true"></span> Not attempted</span>
+            <span class="progress-legend-item"><span class="progress-box is-missed" aria-hidden="true"></span> Incorrect</span>
+            <span class="progress-legend-item"><span class="progress-box is-mastered" aria-hidden="true"></span> Correct</span>
           </div>
         </div>
 
@@ -41,12 +42,9 @@
             </div>
             <div class="progress-grid" role="list" aria-label="{{ group.section }} questions">
               {% for q in group.questions %}
-              <span
-                class="progress-box{% if q.mastered %} is-mastered{% endif %}"
-                role="listitem"
-                title="{{ q.id }}"
-                aria-label="{{ q.id }}{% if q.mastered %} — answered correctly{% endif %}"
-              ></span>
+              {% with extra_class='' %}
+              {% include "_progress_box.html" %}
+              {% endwith %}
               {% endfor %}
             </div>
           </article>
@@ -61,16 +59,13 @@
           <h2>Completion</h2>
           <span class="panel-count">{{ progress.mastered }}/{{ progress.total }}</span>
         </div>
-        <p class="progress-tower-hint">Each box is one question. Yellow = answered correctly.</p>
+        <p class="progress-tower-hint">Click a box to practice that question. Yellow = correct, red = incorrect.</p>
         <div class="progress-tower-window">
           <div class="progress-tower-grid" role="list">
             {% for q in progress.questions %}
-            <span
-              class="progress-box progress-tower-box{% if q.mastered %} is-mastered{% endif %}"
-              role="listitem"
-              title="{{ q.id }}"
-              aria-label="{{ q.id }}{% if q.mastered %} — answered correctly{% endif %}"
-            ></span>
+            {% with extra_class='progress-tower-box' %}
+            {% include "_progress_box.html" %}
+            {% endwith %}
             {% endfor %}
           </div>
         </div>

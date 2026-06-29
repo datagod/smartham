@@ -227,8 +227,20 @@ def create_app(settings: dict[str, Any] | None = None) -> FastAPI:
     async def api_questions(
         level: str | None = Query(None),
         section: str | None = Query(None),
+        question_id: str | None = Query(None),
         limit: int = Query(1, ge=1, le=50),
     ) -> JSONResponse:
+        if question_id:
+            row = state.conn.execute(
+                "SELECT * FROM questions WHERE id = ?",
+                (question_id.strip(),),
+            ).fetchone()
+            if not row:
+                return JSONResponse({"questions": []})
+            q = _question_row(row)
+            q.pop("correct", None)
+            return JSONResponse({"questions": [q]})
+
         clauses = []
         params: list[Any] = []
         if level:
