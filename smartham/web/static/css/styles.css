@@ -341,7 +341,7 @@ body {
 }
 
 .progress-layout {
-  grid-template-columns: minmax(0, 1fr) minmax(148px, 188px);
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
   align-items: start;
 }
 
@@ -383,7 +383,7 @@ body {
 
 .progress-tower-grid {
   display: grid;
-  grid-template-columns: repeat(10, minmax(0, 1fr));
+  grid-template-columns: repeat(25, minmax(0, 1fr));
   gap: 3px;
 }
 
