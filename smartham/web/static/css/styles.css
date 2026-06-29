@@ -340,6 +340,59 @@ body {
   z-index: 1;
 }
 
+.progress-layout {
+  grid-template-columns: minmax(0, 1fr) minmax(148px, 188px);
+  align-items: start;
+}
+
+.progress-main {
+  min-width: 0;
+}
+
+.progress-tower {
+  position: sticky;
+  top: 1rem;
+  max-height: calc(100vh - 3rem);
+  min-height: 520px;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 0.85rem;
+}
+
+.progress-tower-head {
+  margin-bottom: 0.35rem;
+}
+
+.progress-tower-hint {
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.35;
+  margin-bottom: 0.65rem;
+}
+
+.progress-tower-window {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  border-radius: var(--radius);
+  padding: 0.45rem;
+}
+
+.progress-tower-grid {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 3px;
+}
+
+.progress-tower-box {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+}
+
 .study-list { list-style: none; }
 .study-item {
   padding: 0.65rem 0;
@@ -397,6 +450,12 @@ body {
 
 @media (max-width: 1100px) {
   .main, .main--triple { grid-template-columns: 1fr; }
+  .progress-layout { grid-template-columns: 1fr; }
+  .progress-tower {
+    position: static;
+    max-height: 420px;
+    min-height: 320px;
+  }
 }
 @media (max-width: 700px) {
   .app, .set-app { padding: 1rem; }

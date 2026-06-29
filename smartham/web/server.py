@@ -131,6 +131,7 @@ def _progress_groups(conn: Any, level: str | None = None) -> dict[str, Any]:
         "total": len(items),
         "mastered": mastered,
         "groups": ordered,
+        "questions": items,
     }
 
 

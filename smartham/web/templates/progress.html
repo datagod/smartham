@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Question Progress · SmartHam</title>
-  <link rel="stylesheet" href="/static/css/styles.css?v=3">
+  <link rel="stylesheet" href="/static/css/styles.css?v=4">
 </head>
 <body>
   <div class="app">
     {% include "_nav.html" %}
 
-    <main class="main main--single">
-      <section class="panel">
+    <main class="main progress-layout">
+      <section class="panel progress-main">
         <div class="panel-head">
           <h2>Question Progress</h2>
           <span class="panel-count">{{ progress.mastered }} / {{ progress.total }} correct</span>
@@ -55,6 +55,26 @@
           {% endfor %}
         </div>
       </section>
+
+      <aside class="panel progress-tower" aria-label="Overall question completion">
+        <div class="panel-head progress-tower-head">
+          <h2>Completion</h2>
+          <span class="panel-count">{{ progress.mastered }}/{{ progress.total }}</span>
+        </div>
+        <p class="progress-tower-hint">Each box is one question. Yellow = answered correctly.</p>
+        <div class="progress-tower-window">
+          <div class="progress-tower-grid" role="list">
+            {% for q in progress.questions %}
+            <span
+              class="progress-box progress-tower-box{% if q.mastered %} is-mastered{% endif %}"
+              role="listitem"
+              title="{{ q.id }}"
+              aria-label="{{ q.id }}{% if q.mastered %} — answered correctly{% endif %}"
+            ></span>
+            {% endfor %}
+          </div>
+        </div>
+      </aside>
     </main>
   </div>
   <script src="/static/js/app.js?v=5"></script>
