@@ -3,6 +3,7 @@
   <p class="subtitle">Canadian amateur radio exam prep with practice quizzes, mock exams, and Ollama tutoring</p>
   <nav class="site-nav" aria-label="Site">
     <a href="/" {% if page == 'dashboard' %}aria-current="page"{% endif %}>Dashboard</a>
+    <a href="/progress" {% if page == 'progress' %}aria-current="page"{% endif %}>Progress</a>
     <a href="/study" {% if page == 'study' %}aria-current="page"{% endif %}>Study</a>
     <a href="/quiz" {% if page == 'quiz' %}aria-current="page"{% endif %}>Practice Quiz</a>
     <a href="/mock-exam" {% if page == 'mock' %}aria-current="page"{% endif %}>Mock Exam</a>

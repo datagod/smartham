@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Question Progress · SmartHam</title>
+  <link rel="stylesheet" href="/static/css/styles.css?v=3">
+</head>
+<body>
+  <div class="app">
+    {% include "_nav.html" %}
+
+    <main class="main main--single">
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Question Progress</h2>
+          <span class="panel-count">{{ progress.mastered }} / {{ progress.total }} correct</span>
+        </div>
+
+        <div class="progress-toolbar">
+          <div class="progress-filters" role="group" aria-label="Exam level filter">
+            <a class="btn btn-small {% if not level_filter %}btn-primary{% else %}btn-secondary{% endif %}" href="/progress">All</a>
+            <a class="btn btn-small {% if level_filter == 'basic' %}btn-primary{% else %}btn-secondary{% endif %}" href="/progress?level=basic">Basic</a>
+            <a class="btn btn-small {% if level_filter == 'advanced' %}btn-primary{% else %}btn-secondary{% endif %}" href="/progress?level=advanced">Advanced</a>
+          </div>
+          <div class="progress-legend">
+            <span class="progress-legend-item"><span class="progress-box" aria-hidden="true"></span> Not yet correct</span>
+            <span class="progress-legend-item"><span class="progress-box is-mastered" aria-hidden="true"></span> Answered correctly</span>
+          </div>
+        </div>
+
+        <div class="progress-sections">
+          {% for group in progress.groups %}
+          <article class="progress-section">
+            <div class="progress-section-head">
+              <div>
+                <h3 class="progress-section-title">{{ group.section }} <span class="progress-section-level">({{ group.level }})</span></h3>
+                <p class="study-item-desc">{{ group.description }}</p>
+              </div>
+              <span class="progress-section-count">{{ group.mastered }}/{{ group.total }}</span>
+            </div>
+            <div class="progress-grid" role="list" aria-label="{{ group.section }} questions">
+              {% for q in group.questions %}
+              <span
+                class="progress-box{% if q.mastered %} is-mastered{% endif %}"
+                role="listitem"
+                title="{{ q.id }}"
+                aria-label="{{ q.id }}{% if q.mastered %} — answered correctly{% endif %}"
+              ></span>
+              {% endfor %}
+            </div>
+          </article>
+          {% else %}
+          <p class="summary-empty">No questions ingested yet. Run ingest from Settings.</p>
+          {% endfor %}
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="/static/js/app.js?v=5"></script>
+</body>
+</html>

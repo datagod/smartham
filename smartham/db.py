@@ -208,6 +208,46 @@ def get_streak(conn: sqlite3.Connection) -> int:
     return streak
 
 
+def question_progress(
+    conn: sqlite3.Connection,
+    *,
+    level: str | None = None,
+) -> list[dict[str, Any]]:
+    clauses: list[str] = []
+    params: list[Any] = []
+    if level:
+        clauses.append("q.level = ?")
+        params.append(level)
+    where = f"WHERE {' AND '.join(clauses)}" if clauses else ""
+    rows = conn.execute(
+        f"""
+        SELECT
+            q.id,
+            q.level,
+            q.section,
+            EXISTS (
+                SELECT 1 FROM quiz_attempts a
+                WHERE a.question_id = q.id
+                  AND a.mode = 'practice'
+                  AND a.is_correct = 1
+            ) AS mastered
+        FROM questions q
+        {where}
+        ORDER BY q.id
+        """,
+        params,
+    ).fetchall()
+    return [
+        {
+            "id": row["id"],
+            "level": row["level"],
+            "section": row["section"],
+            "mastered": bool(row["mastered"]),
+        }
+        for row in rows
+    ]
+
+
 def get_section_accuracy(conn: sqlite3.Connection, section: str) -> tuple[int, int]:
     row = conn.execute(
         """

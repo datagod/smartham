@@ -24,6 +24,7 @@ from smartham.db import (
     get_cached_summary,
     get_streak,
     init_db,
+    question_progress,
     record_attempt,
     upsert_questions,
     upsert_study_sections,
@@ -103,6 +104,36 @@ def _stats(conn: Any) -> dict[str, Any]:
     }
 
 
+def _progress_groups(conn: Any, level: str | None = None) -> dict[str, Any]:
+    items = question_progress(conn, level=level)
+    groups: dict[str, dict[str, Any]] = {}
+    mastered = 0
+    for item in items:
+        section = item["section"]
+        if section not in groups:
+            groups[section] = {
+                "section": section,
+                "level": item["level"],
+                "description": section_description(section),
+                "questions": [],
+                "mastered": 0,
+                "total": 0,
+            }
+        group = groups[section]
+        group["questions"].append(item)
+        group["total"] += 1
+        if item["mastered"]:
+            group["mastered"] += 1
+            mastered += 1
+    ordered = sorted(groups.values(), key=lambda g: g["section"])
+    return {
+        "level": level,
+        "total": len(items),
+        "mastered": mastered,
+        "groups": ordered,
+    }
+
+
 def create_app(settings: dict[str, Any] | None = None) -> FastAPI:
     settings = settings or load_settings()
     state = AppState(settings)
@@ -144,6 +175,19 @@ def create_app(settings: dict[str, Any] | None = None) -> FastAPI:
         ctx["awards"] = awards_status(state.conn)
         return TEMPLATES.TemplateResponse(request, "awards.html", ctx)
 
+    @app.get("/progress", response_class=HTMLResponse)
+    async def progress_page(
+        request: Request,
+        level: str | None = Query(None),
+    ) -> HTMLResponse:
+        level_filter = level.strip().lower() if level else None
+        if level_filter not in (None, "basic", "advanced"):
+            level_filter = None
+        ctx = nav_context(request, "progress")
+        ctx["progress"] = _progress_groups(state.conn, level_filter)
+        ctx["level_filter"] = level_filter
+        return TEMPLATES.TemplateResponse(request, "progress.html", ctx)
+
     @app.get("/settings", response_class=HTMLResponse)
     async def settings_page(request: Request) -> HTMLResponse:
         ctx = nav_context(request, "settings")
@@ -170,6 +214,13 @@ def create_app(settings: dict[str, Any] | None = None) -> FastAPI:
     @app.get("/api/stats")
     async def api_stats() -> JSONResponse:
         return JSONResponse(_stats(state.conn))
+
+    @app.get("/api/progress")
+    async def api_progress(level: str | None = Query(None)) -> JSONResponse:
+        level_filter = level.strip().lower() if level else None
+        if level_filter not in (None, "basic", "advanced"):
+            level_filter = None
+        return JSONResponse(_progress_groups(state.conn, level_filter))
 
     @app.get("/api/questions")
     async def api_questions(
